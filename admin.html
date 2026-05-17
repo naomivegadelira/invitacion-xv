@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#1a0a12"/>
+<title>Admin · XV Naomi Lizbeth</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400&family=Great+Vibes&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --rosa:#e8a0b4;--rosa-dark:#c4607a;--rosa-light:#fce4ec;
+  --dorado:#c9a84c;--dorado-light:#f5e6c0;
+  --crema:#fdf6f0;--texto:#3a1a2e;
+  --verde:#4caf82;--rojo:#e85c7a;--amarillo:#f0c040;
+}
+body{font-family:'Cormorant Garamond',serif;background:#f5f0f8;min-height:100vh;color:var(--texto)}
+
+/* LOGIN */
+#login-screen{
+  min-height:100vh;
+  background:linear-gradient(160deg,#1a0a12,#2d1020,#1a0a12);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.login-card{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(201,168,76,.25);
+  border-radius:20px;padding:40px 32px;
+  max-width:360px;width:100%;
+  backdrop-filter:blur(10px);text-align:center;
+}
+.login-title{
+  font-family:'Great Vibes',cursive;
+  font-size:48px;color:var(--dorado);margin-bottom:4px;
+}
+.login-sub{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,230,192,.5);margin-bottom:32px}
+.login-input{
+  width:100%;padding:14px 16px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(201,168,76,.25);
+  border-radius:10px;color:#fdf0e0;
+  font-size:18px;text-align:center;letter-spacing:4px;
+  outline:none;margin-bottom:16px;
+  font-family:'Cormorant Garamond',serif;
+  -webkit-appearance:none;
+}
+.login-input:focus{border-color:var(--dorado)}
+.login-input::placeholder{letter-spacing:1px;font-size:14px;color:rgba(245,230,192,.3)}
+.login-btn{
+  width:100%;padding:16px;
+  background:linear-gradient(135deg,var(--dorado),#a07020);
+  border:none;border-radius:40px;
+  color:#1a0a12;font-family:'Playfair Display',serif;
+  font-size:17px;font-weight:700;cursor:pointer;
+  touch-action:manipulation;
+}
+.login-error{
+  color:#e85c7a;font-size:13px;margin-top:10px;
+  display:none;
+}
+
+/* PANEL */
+#panel{display:none}
+
+.topbar{
+  background:linear-gradient(135deg,#1a0a12,#2d1020);
+  padding:16px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 2px 16px rgba(0,0,0,.3);
+}
+.topbar-title{
+  font-family:'Great Vibes',cursive;
+  font-size:28px;color:var(--dorado);
+}
+.topbar-sub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,230,192,.4)}
+.logout-btn{
+  background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.2);
+  color:rgba(245,230,192,.5);font-size:12px;padding:6px 12px;
+  border-radius:20px;cursor:pointer;touch-action:manipulation;
+}
+
+.content{padding:16px;max-width:640px;margin:0 auto}
+
+/* STATS */
+.stats-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  margin-bottom:20px;
+}
+.stat-card{
+  background:#fff;border-radius:14px;padding:16px 10px;
+  text-align:center;
+  box-shadow:0 2px 12px rgba(0,0,0,.06);
+  border-top:3px solid transparent;
+}
+.stat-card.verde{border-color:var(--verde)}
+.stat-card.rojo{border-color:var(--rojo)}
+.stat-card.amarillo{border-color:var(--amarillo)}
+.stat-card.dorado{border-color:var(--dorado)}
+.stat-num{
+  font-family:'Playfair Display',serif;
+  font-size:32px;font-weight:700;
+  line-height:1;margin-bottom:4px;
+}
+.stat-card.verde .stat-num{color:var(--verde)}
+.stat-card.rojo .stat-num{color:var(--rojo)}
+.stat-card.amarillo .stat-num{color:var(--amarillo)}
+.stat-card.dorado .stat-num{color:var(--dorado)}
+.stat-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#999}
+
+.total-card{
+  background:linear-gradient(135deg,#1a0a12,#2d1020);
+  border-radius:14px;padding:18px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:20px;
+  box-shadow:0 4px 20px rgba(26,10,18,.2);
+}
+.total-info{}
+.total-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,230,192,.4);margin-bottom:4px}
+.total-num{font-family:'Playfair Display',serif;font-size:36px;color:var(--dorado);font-weight:700;line-height:1}
+.total-sub{font-size:12px;color:rgba(245,230,192,.4);margin-top:4px}
+.total-icon{font-size:48px;opacity:.15}
+
+/* BUSCADOR */
+.search-wrap{position:relative;margin-bottom:16px}
+.search-input{
+  width:100%;padding:13px 16px 13px 42px;
+  background:#fff;border:1px solid #e8e0f0;
+  border-radius:12px;font-size:16px;
+  font-family:'Cormorant Garamond',serif;
+  color:var(--texto);outline:none;
+  box-shadow:0 2px 8px rgba(0,0,0,.04);
+  -webkit-appearance:none;
+}
+.search-input:focus{border-color:var(--dorado)}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;opacity:.4}
+
+/* FILTROS */
+.filters{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px}
+.filters::-webkit-scrollbar{display:none}
+.filter-btn{
+  padding:7px 16px;border-radius:20px;border:1px solid #e8e0f0;
+  background:#fff;font-size:13px;font-family:'Cormorant Garamond',serif;
+  color:#888;cursor:pointer;white-space:nowrap;touch-action:manipulation;
+  transition:all .2s;
+}
+.filter-btn.active{background:var(--rosa-dark);border-color:var(--rosa-dark);color:#fff}
+
+/* LISTA */
+.list-header{
+  font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  color:#aaa;margin-bottom:10px;padding-left:4px;
+}
+.guest-card{
+  background:#fff;border-radius:14px;
+  padding:16px;margin-bottom:10px;
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+  border-left:4px solid transparent;
+  display:flex;align-items:flex-start;gap:12px;
+  animation:cardIn .3s ease both;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.guest-card.si{border-color:var(--verde)}
+.guest-card.no{border-color:var(--rojo)}
+.guest-card.quizas{border-color:var(--amarillo)}
+
+.guest-avatar{
+  width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:700;color:#fff;
+  flex-shrink:0;font-family:'Playfair Display',serif;
+}
+.si .guest-avatar{background:linear-gradient(135deg,#4caf82,#2e7d5a)}
+.no .guest-avatar{background:linear-gradient(135deg,#e85c7a,#a03050)}
+.quizas .guest-avatar{background:linear-gradient(135deg,#f0c040,#c09010)}
+
+.guest-body{flex:1;min-width:0}
+.guest-name{
+  font-family:'Playfair Display',serif;
+  font-size:17px;font-weight:700;color:var(--texto);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  margin-bottom:4px;
+}
+.guest-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.badge{
+  font-size:11px;padding:3px 10px;border-radius:20px;
+  display:inline-flex;align-items:center;gap:4px;
+}
+.badge-asiste{background:#e8f7ef;color:#2e7d5a}
+.badge-no{background:#fde8ed;color:#a03050}
+.badge-quizas{background:#fef9e7;color:#8a6000}
+.badge-personas{background:#f0ebff;color:#5a3a9a}
+.guest-msg{
+  font-size:13px;color:#888;margin-top:6px;
+  font-style:italic;line-height:1.5;
+}
+.guest-fecha{font-size:11px;color:#ccc;margin-top:4px}
+
+.empty{
+  text-align:center;padding:48px 20px;
+  color:#bbb;
+}
+.empty-icon{font-size:48px;margin-bottom:12px;opacity:.3}
+.empty p{font-size:15px}
+
+/* REFRESH */
+.refresh-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;
+}
+.refresh-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 14px;background:#fff;
+  border:1px solid #e8e0f0;border-radius:20px;
+  font-size:13px;color:var(--rosa-dark);cursor:pointer;
+  touch-action:manipulation;font-family:'Cormorant Garamond',serif;
+  box-shadow:0 1px 4px rgba(0,0,0,.05);
+}
+.spin{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.last-update{font-size:11px;color:#bbb}
+
+/* LOADING */
+.loading{
+  text-align:center;padding:40px;
+}
+.loading-dots span{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  background:var(--dorado);margin:0 3px;
+  animation:bounce .8s infinite;
+}
+.loading-dots span:nth-child(2){animation-delay:.15s}
+.loading-dots span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-8px);opacity:1}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-title">Naomi</div>
+    <div class="login-sub">Panel de confirmaciones</div>
+    <input class="login-input" type="password" id="pwd-input" placeholder="Contraseña" onkeydown="if(event.key==='Enter')checkLogin()"/>
+    <button class="login-btn" onclick="checkLogin()">✨ Entrar</button>
+    <div class="login-error" id="login-error">Contraseña incorrecta</div>
+  </div>
+</div>
+
+<!-- PANEL -->
+<div id="panel">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">XV Naomi</div>
+      <div class="topbar-sub">Confirmaciones de asistencia</div>
+    </div>
+    <button class="logout-btn" onclick="logout()">Salir</button>
+  </div>
+
+  <div class="content">
+
+    <!-- TOTALES -->
+    <div class="total-card" id="total-card">
+      <div class="total-info">
+        <div class="total-label">Total de personas</div>
+        <div class="total-num" id="total-personas">—</div>
+        <div class="total-sub" id="total-respuestas">cargando...</div>
+      </div>
+      <div class="total-icon">🎉</div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card verde">
+        <div class="stat-num" id="cnt-si">—</div>
+        <div class="stat-label">✅ Sí van</div>
+      </div>
+      <div class="stat-card rojo">
+        <div class="stat-num" id="cnt-no">—</div>
+        <div class="stat-label">❌ No van</div>
+      </div>
+      <div class="stat-card amarillo">
+        <div class="stat-num" id="cnt-quizas">—</div>
+        <div class="stat-label">⏳ Pendiente</div>
+      </div>
+    </div>
+
+    <!-- BUSCADOR -->
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" type="search" id="search-input" placeholder="Buscar invitado..." oninput="renderList()"/>
+    </div>
+
+    <!-- FILTROS -->
+    <div class="filters">
+      <button class="filter-btn active" onclick="setFilter('todos',this)">Todos</button>
+      <button class="filter-btn" onclick="setFilter('si',this)">✅ Confirmados</button>
+      <button class="filter-btn" onclick="setFilter('no',this)">❌ No asisten</button>
+      <button class="filter-btn" onclick="setFilter('quizas',this)">⏳ Pendientes</button>
+    </div>
+
+    <!-- LISTA -->
+    <div class="refresh-bar">
+      <div class="list-header" id="list-count">Cargando...</div>
+      <button class="refresh-btn" onclick="loadData()" id="refresh-btn">
+        <span id="refresh-icon">↻</span> Actualizar
+      </button>
+    </div>
+
+    <div id="guest-list">
+      <div class="loading">
+        <div class="loading-dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+
+    <div class="last-update" id="last-update"></div>
+  </div>
+</div>
+
+<script>
+const PASSWORD = 'naomi2026'; // cambia esto si quieres
+const SHEET_ID = '1hcD4jZglJW05nFBTjwLhGc3GWV6T-NpXjKWlGsm1yNk';
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Sheet1`;
+
+let allGuests = [];
+let currentFilter = 'todos';
+
+/* ======= LOGIN ======= */
+function checkLogin(){
+  const val = document.getElementById('pwd-input').value;
+  const err = document.getElementById('login-error');
+  if(val === PASSWORD){
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('panel').style.display = 'block';
+    sessionStorage.setItem('naomi_auth','1');
+    loadData();
+  } else {
+    err.style.display = 'block';
+    document.getElementById('pwd-input').value = '';
+    document.getElementById('pwd-input').focus();
+  }
+}
+
+function logout(){
+  sessionStorage.removeItem('naomi_auth');
+  location.reload();
+}
+
+// Auto-login si ya estaba autenticado
+if(sessionStorage.getItem('naomi_auth')==='1'){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('panel').style.display='block';
+  loadData();
+}
+
+/* ======= CARGAR DATOS ======= */
+async function loadData(){
+  const btn = document.getElementById('refresh-btn');
+  const icon = document.getElementById('refresh-icon');
+  icon.classList.add('spin');
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(SHEET_URL + '&t=' + Date.now());
+    const text = await res.text();
+    // La API de gviz devuelve JSONP, extraemos el JSON
+    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
+    const rows = json.table.rows;
+
+    allGuests = rows.map(row => {
+      const cols = row.c;
+      return {
+        fecha:    cols[0]?.v ? formatFecha(cols[0].v) : '—',
+        nombre:   cols[1]?.v || '—',
+        personas: parseInt(cols[2]?.v) || 1,
+        asiste:   normalizeAsiste(cols[3]?.v || ''),
+        asistetxt: cols[3]?.v || '—',
+        mensaje:  cols[4]?.v || '',
+      };
+    }).filter(g => g.nombre !== '—' && g.nombre !== 'Nombre completo');
+
+    updateStats();
+    renderList();
+
+    const now = new Date();
+    document.getElementById('last-update').textContent =
+      `Actualizado a las ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+  } catch(e) {
+    document.getElementById('guest-list').innerHTML =
+      `<div class="empty"><div class="empty-icon">⚠️</div><p>Error al cargar datos.<br/>Verifica que la hoja sea pública.</p></div>`;
+  }
+
+  icon.classList.remove('spin');
+  btn.disabled = false;
+}
+
+function normalizeAsiste(val){
+  const v = val.toLowerCase().trim();
+  if(v.includes('sí') || v.includes('si') || v==='s') return 'si';
+  if(v.includes('no')) return 'no';
+  return 'quizas';
+}
+
+function formatFecha(gvizDate){
+  // gviz devuelve "Date(year,month,day,h,m,s)"
+  try {
+    const parts = gvizDate.replace('Date(','').replace(')','').split(',').map(Number);
+    const d = new Date(parts[0], parts[1], parts[2], parts[3]||0, parts[4]||0);
+    return d.toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric'}) +
+           ' ' + d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  } catch{ return '—'; }
+}
+
+/* ======= STATS ======= */
+function updateStats(){
+  const si = allGuests.filter(g=>g.asiste==='si');
+  const no = allGuests.filter(g=>g.asiste==='no');
+  const quizas = allGuests.filter(g=>g.asiste==='quizas');
+  const totalPersonas = si.reduce((a,g)=>a+g.personas,0);
+
+  document.getElementById('cnt-si').textContent = si.length;
+  document.getElementById('cnt-no').textContent = no.length;
+  document.getElementById('cnt-quizas').textContent = quizas.length;
+  document.getElementById('total-personas').textContent = totalPersonas;
+  document.getElementById('total-respuestas').textContent =
+    `${allGuests.length} respuesta${allGuests.length!==1?'s':''} recibida${allGuests.length!==1?'s':''}`;
+}
+
+/* ======= FILTRO ======= */
+function setFilter(f, btn){
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderList();
+}
+
+/* ======= RENDER ======= */
+function renderList(){
+  const q = document.getElementById('search-input').value.toLowerCase().trim();
+  let list = allGuests;
+
+  if(currentFilter !== 'todos') list = list.filter(g=>g.asiste===currentFilter);
+  if(q) list = list.filter(g=>g.nombre.toLowerCase().includes(q));
+
+  // Ordenar: si → quizas → no, luego por nombre
+  const order = {si:0,quizas:1,no:2};
+  list.sort((a,b)=> order[a.asiste]-order[b.asiste] || a.nombre.localeCompare(b.nombre));
+
+  document.getElementById('list-count').textContent =
+    `${list.length} invitado${list.length!==1?'s':''}`;
+
+  if(list.length===0){
+    document.getElementById('guest-list').innerHTML =
+      `<div class="empty"><div class="empty-icon">🔍</div><p>No se encontraron resultados</p></div>`;
+    return;
+  }
+
+  document.getElementById('guest-list').innerHTML = list.map((g,i) => {
+    const initial = g.nombre.charAt(0).toUpperCase();
+    const badgeClass = g.asiste==='si'?'badge-asiste':g.asiste==='no'?'badge-no':'badge-quizas';
+    const badgeIcon = g.asiste==='si'?'✅':g.asiste==='no'?'❌':'⏳';
+    const badgeText = g.asiste==='si'?'Confirma':g.asiste==='no'?'No asiste':'Pendiente';
+    const msgHtml = g.mensaje
+      ? `<div class="guest-msg">💬 "${g.mensaje}"</div>` : '';
+
+    return `
+    <div class="guest-card ${g.asiste}" style="animation-delay:${i*0.04}s">
+      <div class="guest-avatar">${initial}</div>
+      <div class="guest-body">
+        <div class="guest-name">${g.nombre}</div>
+        <div class="guest-meta">
+          <span class="badge ${badgeClass}">${badgeIcon} ${badgeText}</span>
+          <span class="badge badge-personas">👥 ${g.personas} persona${g.personas!==1?'s':''}</span>
+        </div>
+        ${msgHtml}
+        <div class="guest-fecha">📅 ${g.fecha}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+</script>
+</body>
+</html>
